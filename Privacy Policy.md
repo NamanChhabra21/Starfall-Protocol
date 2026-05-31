@@ -8,10 +8,12 @@ This game is personal project created using Python.
 
 The game may store simple local data such as:
 
-- High scores
+- High score
 - Game settings
 - Progress data
 - User Feedback and Rating
+- Total play time
+- Last played time
 - Name ( optional ) 
 
 This information is stored on the user's device and Firebase for analysis. 
@@ -30,7 +32,6 @@ This project does not collect:
 The game does not use:
 
 - Online tracking
-- Analytics services
 - Advertisements
 - Remote servers
 
