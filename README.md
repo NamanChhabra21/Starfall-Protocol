@@ -13,29 +13,33 @@
 # Rocket-Game
 An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
 
-Controls:
+### Controls:
   - `WASD` / Arrow Keys to move
   - `Space` to Start / Pause the Game | Skipping Scenes
   - `m` to mute / unmute sounds
     
-Modules Used:
+### Modules Used:
+##### Required Modules
+  - requests 
+  - customtkinter
   - pygame
-  - splashscreen_engine ( Install it using `pip install splashscreen-engine==2.0.4` )
+  - splashscreen_engine
+> Install these using : `pip install requests customtkinter pygame splashscreen-engine`
+##### Built-in Modules
   - time
   - os
   - random
   - threading
   - sys
   - platform
-  - requests
   - json
   - datetime
   - uuid
-  - customtkinter
+
 ---
 ## Enabled with ingame Data Processing
 - Using Google's Firebase to store User data.
-- Using it for realtime data tracking ,feedback and rating support.
+- Using it for realtime data tracking, feedback and rating support.
 ## Screenshots:
 ### Loading Screen
 ![Starting Screen](Screenshots/Shot1.png)
