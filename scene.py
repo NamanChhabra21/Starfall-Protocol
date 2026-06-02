@@ -1,29 +1,29 @@
 import pygame
 import splashscreen_engine as splash # For Video Playing | pip install splashscreen-engine
-import DataHandling
 
-def save_data():
-    DataHandling.update_last_played()
-    clock = pygame.time.Clock()
-    DataHandling.update_playtime(clock.get_time()/60)
 
 
 pygame.init()
 loadimg = pygame.image.load
-pygame.display.set_caption("My Story")
+pygame.display.set_caption("Starfall Protocol")
 pygame.mixer.init()
+clock = pygame.time.Clock()
 
 is_mute = False
 is_quit = False
+
+last_width = None
+last_height = None
+
 class GameOverScene:
     def __init__(self, width, height,mute):
-        global is_mute,is_quit
+        global is_mute,is_quit, last_width,last_height
         is_mute = mute
         window= splash.Screen(title_bar=True)
 
         window.size(width,height)
         window.start()
-        window.title("GameOver")
+        window.title("Starfall Protocol")
 
         skip_text = splash.Text(window,"Press `Space` to Skip.","lucida handwriting",30,"down")
         skip_text.show()
@@ -43,6 +43,8 @@ class GameOverScene:
                 # Handle window close
                 if event.type == pygame.QUIT:
                     sound1.stop()
+
+                    last_width,last_height = window.width, window.height
                     window.stop(quit_pygame=True)
                     is_quit = True
                     return
@@ -60,25 +62,26 @@ class GameOverScene:
                         is_mute = mute
                     if event.key == pygame.K_SPACE:
                         sound1.stop()
+                        last_width, last_height = window.width, window.height
                         window.stop(quit_pygame=False)
                         pygame.display.update()
-                        save_data()
+
                         return
-        save_data()
+        last_width, last_height = window.width, window.height
         window.stop(quit_pygame=False)
-        save_data()
+
 
 
 class GameStartScene:
     def __init__(self, width, height,mute=is_mute):
-        global is_mute,is_quit
+        global is_mute,is_quit, last_width,last_height
         is_mute = mute
         window= splash.Screen(title_bar=True)
         window.size(width, height)
         window.start()
 
 
-        window.title("Rocket Game")
+        window.title("Starfall Protocol")
 
         bg_vid = splash.BackgroundVideo(window,"assets/Scenes/gameStartVid.mp4",fps=60)
         bg_vid.play()
@@ -100,6 +103,8 @@ class GameStartScene:
                 # Handle window close
                 if event.type == pygame.QUIT:
                     sound1.stop()
+
+                    last_width, last_height = window.width, window.height
                     window.stop(quit_pygame=False)
                     is_quit = True
                     return
@@ -117,12 +122,15 @@ class GameStartScene:
                         is_mute = mute
                     if event.key == pygame.K_SPACE:
                         sound1.stop()
+
+                        last_width, last_height = window.width, window.height
                         window.stop(quit_pygame=False)
                         pygame.display.update()
-                        save_data()
+
                         return
-        save_data()
+
         sound1.fadeout(3)
 
+        last_width, last_height = window.width, window.height
         window.stop(quit_pygame=False)
 
