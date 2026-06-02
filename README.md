@@ -12,8 +12,15 @@
 
 # Starfall-Protocol
 An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
+---
+## Download & Play
+### Game Jolt (Recommended)
+https://gamejolt.com/games/starfall-protocol/1074404
 
+### Itch.io
+https://namanchhabra21.itch.io/starfall-protocol
 
+---
 ### Controls:
   - `WASD` / Arrow Keys to move
   - `Space` to Start / Pause the Game | Skipping Scenes
@@ -75,4 +82,7 @@ An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics
 
 ### GAMEOVER
 ![Game Over](Screenshots/Shot7.png)
+
+# Developer Note
+This project was created as an experimental indie game project focused on cinematic 2d game design, fullscreen systems, custom UI, and interactive gameplay using Python and Pygame.
 
