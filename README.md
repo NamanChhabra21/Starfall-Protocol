@@ -10,14 +10,26 @@
 </td>
 </tr>
 
-# Rocket-Game
+# Starfall-Protocol
 An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
+
 
 ### Controls:
   - `WASD` / Arrow Keys to move
   - `Space` to Start / Pause the Game | Skipping Scenes
   - `m` to mute / unmute sounds
-    
+
+### Features:
+##### Dynamic Resizing
+- Users can adjust screen size
+- Supports Fullscreen
+##### Feedback and RateUs button
+- Opens CTk screen
+- Saves user response in Firebase
+##### Scenes
+- Plays Starting / Ending videos
+- Plays Sound Effects
+- Press `Space` to skip scene
 ### Modules Used:
 ##### Required Modules
   - requests 
@@ -40,6 +52,8 @@ An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics
 ## Enabled with ingame Data Processing
 - Using Google's Firebase to store User data.
 - Using it for realtime data tracking, feedback and rating support.
+
+
 ## Screenshots:
 ### Loading Screen
 ![Starting Screen](Screenshots/Shot1.png)
