@@ -52,3 +52,8 @@ class Button:
     def clicked(self, event):
 
         return event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.rect.collidepoint(event.pos)
+    def edit(self,x=None,y=None):
+        if x:
+            self.rect.x = x
+        if y:
+            self.rect.y = y
