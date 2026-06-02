@@ -4,7 +4,8 @@ import json
 import datetime
 import uuid
 
-DATABASE_URL = "YOUR FIREBASE DATABASE URL"
+DATABASE_URL = "https://rocket-gameresult-default-rtdb.asia-southeast1.firebasedatabase.app/"
+
 """
 
 Question : How do I get this Database URl ?
@@ -16,7 +17,7 @@ step-4 : Done and copy the link ( Example: https://mygame-default-rtdb.firebasei
 
 Question : What if I dont want to collect data of User ?
 
-Answer: You can leave the `DATABASE_URL` variable unchanged, it will not effect your main code
+Answer: You can leave the `DATABASE_URL` variable as `None` , it will not effect your main code
 as try/except is used in `main.py` file last line.
 
 FOR FURTHER QUESTIONS , visit discussions tab on Github.
