@@ -66,7 +66,7 @@ https://namanchhabra21.itch.io/starfall-protocol
 ![Starting Screen](Screenshots/Shot1.png)
 
 ### Starting Screen
-![Gameplay](Screenshots/Shot2.png)
+![Gameplay](Screenshots/ScreenShot2.png)
 
 ### Scene-1 The Rocket Starts
 ![Game Over](Screenshots/Shot3.png)
