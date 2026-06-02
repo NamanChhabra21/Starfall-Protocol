@@ -86,10 +86,15 @@ class Feedback:
     def __init__(self):
         root = CTk()
         root.resizable(False,False)
-        center_window(root,300,400)
+        root.overrideredirect(True)
+
+        center_window(root,300,450)
         root.title("Feedback")
         root.configure(fg_color="gray60")
         root.iconbitmap("assets/icon.ico")
+        x_button = CTkButton(root, text="X", font=("george", 20), command=lambda: delete(root), width=40, height=40,
+                             corner_radius=0, fg_color="red", hover_color="red3")
+        x_button.pack(anchor="ne")
 
         feedback_label = CTkLabel(root,text="Feedback",font=("impact",40))
         feedback_label.pack()
