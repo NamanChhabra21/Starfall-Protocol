@@ -13,13 +13,16 @@ mute = False
 current_score = 0
 
 
-
+difficulty_percentage = screen_width//difficulty # Please do not change
 
 import scene    # All the scenes are made in scene.py file
 import DataHandling # Data Handling File
 import AdditionalUi
 import splashscreen_engine as splash # pip install splashscreen-engine
 import pygameButton
+
+import datetime
+startTime = datetime.datetime.now()
 
 
 
@@ -31,9 +34,11 @@ if not Uid.is_created():
     DataHandling.Uid("Guest").make()
 
 
-def save_data(time):
+def save_data():
+    end_time = datetime.datetime.now()
+    difference = end_time - startTime
     DataHandling.update_last_played()
-    DataHandling.update_playtime(time/60)
+    DataHandling.update_playtime(difference.total_seconds())
 
 
 l_screen = splash.Screen()
@@ -41,6 +46,7 @@ l_screen.start()
 
 
 loadingVid = splash.BackgroundVideo(l_screen,"assets\\loadingVid.mp4",loop=True)
+
 loadingVid.play()
 loadingBar = splash.LoadingBar(loadingVid,add_xy=(0,100))
 loadingBar.place()
@@ -94,7 +100,7 @@ messages = [
     "Difficulty increases over time."
 ]
 
-pygame.display.set_caption("Protect The Rocket ~ Made By Naman")
+pygame.display.set_caption("Starfall Protocol")
 icon = pygame.image.load("assets\\icon.ico").convert_alpha()
 pygame.transform.scale(icon, (60, 60))
 pygame.display.set_icon(icon)
@@ -155,13 +161,17 @@ comet = pygame.transform.scale(comet, (60, 60))
 
 update_bar(50)
 
-last_cometScore_update = 3000
 
-stars = pygame.image.load("assets\\Moving_Back.png").convert()
-stars.set_alpha(50)
+
+stars_original = pygame.image.load("assets\\Moving_Back.png").convert()
+stars_original.set_alpha(50)
+stars = pygame.transform.scale(stars_original, (screen_width, screen_height))
+
+
+last_cometScore_update = 5000
 
 def level_up():
-    global asteroid,stars
+    global asteroid,stars, stars_original
     obstacles_path = r"assets/Obstacles"
     file_count_obstacles = len([f for f in os.listdir(obstacles_path) if os.path.isfile(os.path.join(obstacles_path, f))])
     obstacle_number = random.randint(1,file_count_obstacles)
@@ -171,9 +181,11 @@ def level_up():
     bg_path = r"assets/Backgrounds"
     file_count_bg = len([f for f in os.listdir(bg_path) if os.path.isfile(os.path.join(bg_path, f))])
     star_number = random.randint(1,file_count_bg)
-    stars = pygame.image.load(f"assets\\Backgrounds\\{star_number}.png").convert()
-    stars.set_alpha(70)
-    stars = pygame.transform.scale(stars, (screen_width, screen_height))
+
+    stars_original = pygame.image.load(f"assets\\Backgrounds\\{star_number}.png").convert()
+    stars_original.set_alpha(70)
+
+    stars = pygame.transform.scale(stars_original, (screen_width, screen_height))
 
     def level_up_thread():
         if not mute:
@@ -207,16 +219,18 @@ class Block:
             return
         self.turn = random.choice([False, True])
 
-        # If the last saved score (for comet) is less than current score, than update comet rate, store next score update in `last_cometScore_update` i.e. current_score + 800
-        if last_cometScore_update < current_score:
-            last_cometScore_update = current_score + 3000
-            level_up()
-            comet_rate -= 1
-            if comet_rate < 0:
-                comet_rate = random.randint(5, 8)
+
+
+        if comet_rate < 0:
+            comet_rate = random.randint(1, 8)
+            print("Changed comet rate")
+
         if current_score > 5000:
+
+            comet_rate -= 1
             self.comet_chance = update_comet_rate(comet_rate)
             self.iscomet = random.choice(self.comet_chance)
+
             if self.iscomet:
                 self.turn = True
                 self.x = screen_width
@@ -257,10 +271,10 @@ class Block:
 update_bar(60)
 
 def play():
-    global paused, life, difficulty, mute, current_score , stars
-    save_data(clock.get_time())
+    global paused, life, difficulty, mute, current_score , stars, screen_height, screen_width, screen, last_cometScore_update
     max_message = len(messages)
     current_message = 0
+
 
     rocket_L = pygame.image.load("assets\\Rocket_L.png").convert_alpha()
     rocket_L = pygame.transform.scale(rocket_L, (100, 100))
@@ -291,8 +305,12 @@ def play():
 
     blocks = []
 
-    game_over_image = pygame.image.load("assets\\Game_Over.png")
-    game_over_image = pygame.transform.scale(game_over_image, (screen_width // 2, screen_height // 2))
+    game_over_original = pygame.image.load("assets\\Game_Over.png").convert_alpha()
+
+    game_over_image = pygame.transform.scale(
+        game_over_original,
+        (screen_width // 2, screen_height // 2)
+    )
     for _ in range(3):  # number of blocks
         blocks.append(Block(screen_width))
 
@@ -307,15 +325,20 @@ def play():
     next_block_after = 100
     after = 600
 
-    stars = pygame.transform.scale(stars, (screen_width, screen_height))
-    stars_y = 0
-    gap = -1 * stars.get_height()
-    stars_y2 = gap
+
 
     ## Play Scene-1 and store new value of mute
-    save_data(clock.get_time()) # Save play time before destroying screen
     scene.GameStartScene(screen_width, screen_height,mute)
     mute = scene.is_mute
+
+    screen_width = scene.last_width
+    screen_height = scene.last_height
+
+    stars = pygame.transform.scale(stars, (screen_width, screen_height))
+    stars_y = 0
+    gap = -screen_height
+    stars_y2 = gap
+
     if scene.is_quit:
         return
 
@@ -333,7 +356,14 @@ def play():
     show_one_time_high_score = True
 
     game_over_vid_playOneTime = True
+
+
     while running:
+
+        if current_score >= last_cometScore_update:
+            last_cometScore_update = current_score + 4000
+            level_up()
+
         if (not channel2.get_busy()) and not game_over and not mute:
             channel2.play(bg_music)
 
@@ -358,16 +388,20 @@ def play():
                 next_block_after = random.randint(0, int(after))
             continue
         if not paused:
+
+            # Moving Background
             screen.fill((0, 0, 0))
             screen.blit(stars, (0, stars_y))
             screen.blit(stars, (0, stars_y2))
 
             stars_y += 6
             stars_y2 += 6
-            if stars_y >= stars.get_height():
-                stars_y = gap
-            if stars_y2 >= stars.get_height():
-                stars_y2 = gap
+
+            if stars_y >= screen_height:
+                stars_y = stars_y2 - screen_height
+
+            if stars_y2 >= screen_height:
+                stars_y2 = stars_y - screen_height
 
             screen.blit(rockets[number], (x, y))
 
@@ -421,10 +455,14 @@ def play():
                         channel2.fadeout(2000)
                     if game_over_vid_playOneTime:
                         # Play Scene-2 and store new value of mute | I forogot to use `if __name__ == '__main__':`
-                        save_data(clock.get_time())  # Save play time before destroying screen
+
                         scene.GameOverScene(screen_width,screen_height,mute)
                         mute = scene.is_mute
                         game_over_vid_playOneTime = False
+
+                        screen_width = scene.last_width
+                        screen_height = scene.last_height
+
                         if scene.is_quit:
                             save_score(score)
                             running = False
@@ -469,6 +507,7 @@ def play():
             if not paused:
                 if (score - temp_score2) == 1000:
                     lvl_difficult += 1
+                    print(difficulty)
                     if difficulty < lvl_difficult:
                         lvl_difficult = 5
                     temp_score2 = score
@@ -491,7 +530,11 @@ def play():
             showhit -= 1
 
         if paused and game_over:
-            screen.blit(game_over_image, (screen_width // 4, screen_height // 4))
+            game_over_rect = game_over_image.get_rect(
+                center=(screen_width // 2, screen_height // 2)
+            )
+
+            screen.blit(game_over_image, game_over_rect)
         else:
             show_score(life, score, screen)
 
@@ -513,8 +556,33 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                save_data(clock.get_time())
+
                 break
+
+            if event.type == pygame.VIDEORESIZE:
+
+                screen_width = max(event.w, 1)
+                screen_height = max(event.h, 1)
+
+                difficulty = screen_width//difficulty_percentage # Increase/Decrease Maximum blocks per screen
+
+                screen = pygame.display.set_mode(
+                    (screen_width, screen_height),
+                    pygame.RESIZABLE
+                )
+
+                stars = pygame.transform.scale(
+                    stars_original,
+                    (screen_width, screen_height)
+                )
+
+                stars_y = 0
+                stars_y2 = -screen_height
+
+                game_over_image = pygame.transform.scale(
+                    game_over_original,
+                    (screen_width // 2, screen_height // 2)
+                )
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and game_over:
@@ -543,14 +611,44 @@ def play():
             pygame.display.update()
 
 update_bar(70)
-starting_bg = pygame.image.load("assets\\Background_Start.jpg")
-starting_bg = pygame.transform.scale(starting_bg, (screen_width, screen_height))
+starting_bg_original = pygame.image.load(
+    "assets\\Background_Start.jpg"
+).convert()
+
+starting_bg = pygame.transform.scale(
+    starting_bg_original,
+    (screen_width, screen_height)
+)
 
 randx, randy = 0, 0
 
 update_bar(80)
 def starting_screen():
-    global randx, randy, mute
+    global randx, randy, mute,screen_height, screen_width,starting_bg, starting_bg_original
+
+    starting_bg = pygame.transform.scale(
+        starting_bg_original,
+        (screen_width, screen_height)
+    )
+    def check_resize():
+        global screen_height, screen_width,starting_bg
+        screen_dimension = pygame.display.Info()
+        if screen_dimension.current_h != screen_height:
+            # Update height
+            screen_height = screen_dimension.current_h
+            # Update Buttons position
+            Rate_Button.edit(y=screen_height-40)
+            Feedback_Button.edit(y=screen_height - 40)
+
+            starting_bg = pygame.transform.scale(starting_bg, (screen_width, screen_height))
+        elif screen_dimension.current_w != screen_width:
+            # Update width
+            screen_width = screen_dimension.current_w
+            # Update Buttons position
+            Rate_Button.edit(x=screen_width-105)
+            Feedback_Button.edit(x=screen_width - 220)
+
+            starting_bg = pygame.transform.scale(starting_bg, (screen_width, screen_height))
     pygame.event.clear()
     On = True
     angle = 0
@@ -578,7 +676,7 @@ def starting_screen():
             if event.type == pygame.QUIT:
                 On = False
                 channel.fadeout(3000)
-                save_data(clock.get_time())
+
                 break
 
             if event.type == pygame.KEYDOWN:
@@ -604,8 +702,9 @@ def starting_screen():
                 AdditionalUi.Feedback()
                 pygame.event.clear()
 
+            check_resize()
+
         if not On:
-            save_data(clock.get_time())
             break
 
         # Making Some Animation
@@ -619,12 +718,10 @@ def starting_screen():
             size = random.randint(1, 3)
             pygame.draw.circle(screen, color, (randx, randy), size)
 
-        pygame.draw.rect(screen, (255, 255, 255), ((screen_width // 2 - 230), (screen_height // 2 - 150), 460, 290),
-                         barder)
 
-        txt = "Controls: W,A,S,D or Arrow Keys"
-        control_text = load_font.render(txt, 1, (255, 255, 100))
-        screen.blit(control_text, control_text.get_rect(center=(screen_width // 2, screen_height // 2 + 250)))
+        Rect = pygame.Rect(0,0, screen_width//2, screen_height*0.3)
+        Rect.center = screen.get_rect().center
+        pygame.draw.rect(screen, (255, 0, 0), Rect,barder)
 
         Rate_Button.draw(screen)
         Feedback_Button.draw(screen)
@@ -636,17 +733,27 @@ l_screen.stop(quit_pygame=False)
 while l_screen.running:
     l_screen.wait(0.5)
 pygame.display.update()
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screen_width, screen_height),pygame.RESIZABLE)
 starting_screen()
-save_score(current_score)
-save_data(clock.get_time())
+
+# Safely quit pygame
 pygame.quit()
+
+# Save Data at the End
+save_score(current_score)
+save_data()
 
 # Saving data to Firebase
 try:
     DataHandling.save_database()
 except Exception as e:
     DataHandling.add_error(e)
+
+
+
+print("Successfully Exited! ")
+
+
 
 
 # I am an intermediate developer, hence my code looks heavy and less understandable
