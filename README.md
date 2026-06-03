@@ -11,7 +11,7 @@
 </tr>
 
 # Starfall-Protocol
-An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
+#### An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
 ---
 ## Download & Play
 ### Game Jolt (Recommended)
