@@ -86,3 +86,9 @@ https://namanchhabra21.itch.io/starfall-protocol
 # Developer Note
 This project was created as an experimental indie game project focused on cinematic 2d game design, fullscreen systems, custom UI, and interactive gameplay using Python and Pygame.
 
+---
+
+<p align="center">
+  <img src="https://github.com/NamanChhabra21/NamanChhabra21/blob/main/assets/quote-banner.svg" width="70%">
+</p>
+
